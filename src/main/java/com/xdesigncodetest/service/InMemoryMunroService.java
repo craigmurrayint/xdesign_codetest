@@ -1,69 +1,68 @@
 package com.xdesigncodetest.service;
 
-import com.opencsv.bean.BeanVerifier;
-import com.opencsv.bean.CsvToBean;
-import com.opencsv.bean.CsvToBeanBuilder;
-import com.opencsv.exceptions.CsvConstraintViolationException;
+import com.xdesigncodetest.data.InMemoryMunroDAO;
 import com.xdesigncodetest.model.Munro;
-import org.springframework.context.event.ContextRefreshedEvent;
-import org.springframework.context.event.EventListener;
+import org.apache.logging.log4j.util.Strings;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ResourceUtils;
 
-import java.io.*;
-import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service 
 public class InMemoryMunroService implements MunroService {
     
-    private List<Munro> munros = new ArrayList<>();
-
-    @EventListener
-    public void onApplicationEvent(ContextRefreshedEvent event) throws FileNotFoundException {
-
-        File file = ResourceUtils.getFile("classpath:munrotab_v6.2.csv");
-        // parse CSV file to create a list of `User` objects
-        try (Reader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)))) {
-
-            // create csv bean reader
-            CsvToBean<Munro> csvToBean = new CsvToBeanBuilder(reader)
-                .withType(Munro.class)
-                .withIgnoreLeadingWhiteSpace(true)
-                .withVerifier(new MunroVerifier())
-                .build();
-
-            // convert `CsvToBean` object to list of users
-            munros = csvToBean.parse();
-
-        }
-        catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+    @Autowired 
+    private InMemoryMunroDAO munroDAO;
 
     @Override
     public int getCountOfMunros() {
-        return munros.size();
+        return munroDAO.getMunros().size();
     }
    
     @Override
     public Optional<Munro> getMunroById(int runningNo) {
-        return munros.stream().filter(munro -> munro.getRunningNo() == runningNo).findFirst();
+        return munroDAO.getMunros().stream().filter(munro -> munro.getRunningNo() == runningNo).findFirst();
     }
     
-    private class MunroVerifier implements  BeanVerifier<Munro> {
-
-        @Override 
-        public boolean verifyBean(Munro munro) throws CsvConstraintViolationException {
-          if(munro.getRunningNo() == 0) {
-              return false;
-          }
-          return true;
+    @Override
+    public List<Munro> filterMunroListByCategory(final List<Munro> inMunros, final String category) {
+        List<Munro> munros = getMunrosFromDAOIfEmptyOrNull(inMunros);
+        if("EITHER".equalsIgnoreCase(category)) {
+            return munros.stream().filter(munro -> Strings.isNotEmpty(munro.getPost1997())).collect(Collectors.toList());
+        } else {
+            return munros.stream().filter(m -> category.equalsIgnoreCase(m.getPost1997())).collect(Collectors.toList()); 
         }
+    }
+
+    @Override 
+    public List<Munro> sortMunrosByName(final List<Munro> inMunros, final boolean sortAscending) {
+        List<Munro> munros = getMunrosFromDAOIfEmptyOrNull(inMunros);
+        if(sortAscending) {
+            munros.sort(Comparator.comparing(Munro::getName));
+        } else {
+            munros.sort(Comparator.comparing(Munro::getName).reversed());
+        }
+        return munros;
+    }
+
+    @Override
+    public List<Munro> sortMunrosBySize(final List<Munro> inMunros, final boolean sortAscending) {
+        List<Munro> munros = getMunrosFromDAOIfEmptyOrNull(inMunros);
+        if(sortAscending) {
+            munros.sort(Comparator.comparing(Munro::getHeightInMetre));
+        } else {
+            munros.sort(Comparator.comparing(Munro::getHeightInFeet).reversed());
+        }
+        return munros;
+    }
+
+    private List<Munro> getMunrosFromDAOIfEmptyOrNull(List<Munro> munros) {
+        if(munros == null || munros.isEmpty()) {
+            munros = munroDAO.getMunros();
+        }
+        return munros;
     }
 }
