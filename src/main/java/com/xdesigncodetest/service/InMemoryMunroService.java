@@ -38,6 +38,15 @@ public class InMemoryMunroService implements MunroService {
     }
 
     @Override 
+    public List<Munro> filterMunroListByHeight(List<Munro> inMunros, Double minHeight, Double maxHeight) {
+        List<Munro> munros = getMunrosFromDAOIfEmptyOrNull(inMunros);
+        
+        return munros.stream().filter(
+            munro -> ((minHeight == null || munro.getHeightInMetre() >= minHeight) && (maxHeight == null || munro.getHeightInMetre() <= maxHeight)))
+            .collect(Collectors.toList());
+    }
+
+    @Override 
     public List<Munro> sortMunrosByName(final List<Munro> inMunros, final boolean sortAscending) {
         List<Munro> munros = getMunrosFromDAOIfEmptyOrNull(inMunros);
         if(sortAscending) {
@@ -49,7 +58,7 @@ public class InMemoryMunroService implements MunroService {
     }
 
     @Override
-    public List<Munro> sortMunrosBySize(final List<Munro> inMunros, final boolean sortAscending) {
+    public List<Munro> sortMunrosByHeight(final List<Munro> inMunros, final boolean sortAscending) {
         List<Munro> munros = getMunrosFromDAOIfEmptyOrNull(inMunros);
         if(sortAscending) {
             munros.sort(Comparator.comparing(Munro::getHeightInMetre));

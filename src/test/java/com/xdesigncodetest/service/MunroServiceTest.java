@@ -1,15 +1,12 @@
 package com.xdesigncodetest.service;
 
 import com.xdesigncodetest.data.InMemoryMunroDAO;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest(classes = {InMemoryMunroService.class, InMemoryMunroDAO.class})
 public class MunroServiceTest {
     
@@ -30,8 +27,8 @@ public class MunroServiceTest {
     
     @Test
     public void sortByHeightInMetresTest() {
-        assertThat(munroService.sortMunrosBySize(null, true).get(0).getRunningNo()).isEqualTo(376);
-        assertThat(munroService.sortMunrosBySize(null, false).get(0).getRunningNo()).isEqualTo(133);
+        assertThat(munroService.sortMunrosByHeight(null, true).get(0).getRunningNo()).isEqualTo(376);
+        assertThat(munroService.sortMunrosByHeight(null, false).get(0).getRunningNo()).isEqualTo(133);
     }
 
     @Test
@@ -45,5 +42,13 @@ public class MunroServiceTest {
         assertThat(munroService.filterMunroListByCategory(null, "EITHER").size()).isEqualTo(509);
         assertThat(munroService.filterMunroListByCategory(null, "MUN").size()).isEqualTo(282);
         assertThat(munroService.filterMunroListByCategory(null, "TOP").size()).isEqualTo(227);
+    }
+
+    @Test
+    public void filterByHeightTest() {
+        assertThat(munroService.filterMunroListByHeight(null, null, null).size()).isEqualTo(602);
+        assertThat(munroService.filterMunroListByHeight(null, 970d, null).size()).isEqualTo(360);
+        assertThat(munroService.filterMunroListByHeight(null, null, 960d).size()).isEqualTo(212);
+        assertThat(munroService.filterMunroListByHeight(null, 973d, 1001d).size()).isEqualTo(102);
     }
 }

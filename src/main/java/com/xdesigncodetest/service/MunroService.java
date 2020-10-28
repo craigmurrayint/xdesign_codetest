@@ -12,6 +12,7 @@ public interface MunroService {
     int getCountOfMunros();
     Optional<Munro> getMunroById(int runningNo);
     List<Munro> filterMunroListByCategory(final List<Munro> munros, String category);
-    List<Munro> sortMunrosBySize(final List<Munro> munros, final boolean sortAscending);
+    List<Munro> filterMunroListByHeight(List<Munro> munros, Double minHeight, Double maxHeight);
+    List<Munro> sortMunrosByHeight(final List<Munro> munros, final boolean sortAscending);
     List<Munro> sortMunrosByName(final List<Munro> munros, final boolean sortAscending);
 }

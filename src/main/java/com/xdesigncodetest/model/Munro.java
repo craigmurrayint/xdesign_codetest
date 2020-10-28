@@ -1,67 +1,95 @@
 package com.xdesigncodetest.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.opencsv.bean.CsvBindByName;
 
 
 public class Munro {
 
     @CsvBindByName(column = "Running No")
+    @JsonIgnore
     private int runningNo;
     @CsvBindByName(column = "DoBIH Number")
+    @JsonIgnore
     private int dobihNumber;
     @CsvBindByName(column = "Streetmap")
+    @JsonIgnore
     private String stretmap;
     @CsvBindByName(column = "Geograph")
+    @JsonIgnore
     private String geograph;
     @CsvBindByName(column = "Hill-bagging")
+    @JsonIgnore
     private String hillBagging;
     @CsvBindByName(column = "Name")
     private String name;
     @CsvBindByName(column = "SMC Section")
+    @JsonIgnore
     private int smcSection;
     @CsvBindByName(column = "RHB Section")
+    @JsonIgnore
     private String rhbSection;
     @CsvBindByName(column = "_Section")
+    @JsonIgnore
     private String section;
     @CsvBindByName(column = "Height (m)")
     private double heightInMetre;
     @CsvBindByName(column = "Height (ft)")
+    @JsonIgnore
     private double heightInFeet;
     @CsvBindByName(column = "Map 1:50")
+    @JsonIgnore
     private String map150;
     @CsvBindByName(column = "Map 1:25")
+    @JsonIgnore
     private String map125;
     @CsvBindByName(column = "Grid Ref")
     private String gridRef;
     @CsvBindByName(column = "GridRefXY")
+    @JsonIgnore
     private String gridRefXY;
     @CsvBindByName(column = "xcoord")
+    @JsonIgnore
     private int xcoord;
     @CsvBindByName(column = "ycoord")
+    @JsonIgnore
     private int ycoord;
     @CsvBindByName(column = "1891")
+    @JsonIgnore
     private String _1891;
     @CsvBindByName(column = "1921")
+    @JsonIgnore
     private String _1921;
     @CsvBindByName(column = "1933")
+    @JsonIgnore
     private String _1933;
     @CsvBindByName(column = "1953")
+    @JsonIgnore
     private String _1953;
     @CsvBindByName(column = "1969")
+    @JsonIgnore
     private String _1969;
     @CsvBindByName(column = "1974")
+    @JsonIgnore
     private String _1974;
     @CsvBindByName(column = "1981")
+    @JsonIgnore
     private String _1981;
     @CsvBindByName(column = "1984")
+    @JsonIgnore
     private String _1984;
     @CsvBindByName(column = "1990")
+    @JsonIgnore
     private String _1990;
     @CsvBindByName(column = "1997")
+    @JsonIgnore
     private String _1997;
     @CsvBindByName(column = "Post 1997")
+    @JsonProperty("category")
     private String post1997;
     @CsvBindByName(column = "Comments")
+    @JsonIgnore
     private String comments;
 
     public int getRunningNo() {
