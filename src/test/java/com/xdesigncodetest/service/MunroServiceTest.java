@@ -8,44 +8,44 @@ import org.springframework.boot.test.context.SpringBootTest;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(classes = {InMemoryMunroService.class, InMemoryMunroDAO.class})
-public class MunroServiceTest {
+class MunroServiceTest {
     
     @Autowired
     private InMemoryMunroService munroService;
     
     @Test
-    public void munroServiceSetUpTest() {
+    void munroServiceSetUpTest() {
         assertThat(munroService.getCountOfMunros()).isEqualTo(602);
     }
     
     @Test
-    public void getByRunningNoTest() {
+    void getByRunningNoTest() {
         assertThat(munroService.getMunroById(1).get().getRunningNo()).isEqualTo(1);
         assertThat(munroService.getMunroById(602).get().getRunningNo()).isEqualTo(602);
-        assertThat(munroService.getMunroById(1000).isPresent()).isFalse();
+        assertThat(munroService.getMunroById(1000)).isNotPresent();
     }
     
     @Test
-    public void sortByHeightInMetresTest() {
+    void sortByHeightInMetresTest() {
         assertThat(munroService.sortMunrosByHeight(null, true).get(0).getRunningNo()).isEqualTo(376);
         assertThat(munroService.sortMunrosByHeight(null, false).get(0).getRunningNo()).isEqualTo(133);
     }
 
     @Test
-    public void sortByNameTest() {
+    void sortByNameTest() {
         assertThat(munroService.sortMunrosByName(null, true).get(0).getName()).isEqualTo("A' Bhuidheanach Bheag");
         assertThat(munroService.sortMunrosByName(null, false).get(0).getName()).isEqualTo("Tom a' Choinich - Tom a' Choinich Beag");
     }
 
     @Test
-    public void filterByCategoryTest() {
+    void filterByCategoryTest() {
         assertThat(munroService.filterMunroListByCategory(null, "EITHER").size()).isEqualTo(509);
         assertThat(munroService.filterMunroListByCategory(null, "MUN").size()).isEqualTo(282);
         assertThat(munroService.filterMunroListByCategory(null, "TOP").size()).isEqualTo(227);
     }
 
     @Test
-    public void filterByHeightTest() {
+    void filterByHeightTest() {
         assertThat(munroService.filterMunroListByHeight(null, null, null).size()).isEqualTo(602);
         assertThat(munroService.filterMunroListByHeight(null, 970d, null).size()).isEqualTo(360);
         assertThat(munroService.filterMunroListByHeight(null, null, 960d).size()).isEqualTo(212);

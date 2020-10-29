@@ -4,7 +4,6 @@ import com.opencsv.bean.BeanVerifier;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
 import com.opencsv.exceptions.CsvConstraintViolationException;
-import com.sun.javafx.UnmodifiableArrayList;
 import com.xdesigncodetest.model.Munro;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
@@ -28,7 +27,7 @@ public class InMemoryMunroDAO implements MunroDAO{
         try (Reader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)))) {
 
             // create csv bean reader
-            CsvToBean<Munro> csvToBean = new CsvToBeanBuilder(reader)
+            CsvToBean<Munro> csvToBean = new CsvToBeanBuilder<Munro>(reader)
                 .withType(Munro.class)
                 .withIgnoreLeadingWhiteSpace(true)
                 .withVerifier(new MunroVerifier())
@@ -37,10 +36,7 @@ public class InMemoryMunroDAO implements MunroDAO{
             // convert `CsvToBean` object to list of users
             munros.addAll(csvToBean.parse());
         }
-        catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        catch (IOException e) {
+        catch (IOException e ) {
             e.printStackTrace();
         }
     }

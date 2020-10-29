@@ -24,7 +24,7 @@ public class MunroController {
     @GetMapping("/munros")
     public ResponseEntity<List<Munro>> getAllMunros(@RequestParam(required = false) String category, @RequestParam(required = false) Double minHeight, 
         @RequestParam(required = false) Double maxHeight, @RequestParam(required = false) String sortField, 
-        @RequestParam(required = false) String sortType, @RequestParam(required = false) Integer limitResults) {
+        @RequestParam(required = false) String sortOrder, @RequestParam(required = false) Integer limitResults) {
         
         if(isNotValidCategory(category) || isNotValidHeight(minHeight, maxHeight) || invalidSortField(sortField) || invalidResultsLimit(limitResults)) {
             return ResponseEntity.badRequest().build();
@@ -32,6 +32,7 @@ public class MunroController {
         
         //Default list is filtered to have munro & tops
         List<Munro> munros = munroService.filterMunroListByCategory(null, CATEGORY_EITHER);
+        
         if(filtersToBeApplied(category, minHeight, maxHeight)) {
             if(StringUtils.hasLength(category) && !CATEGORY_EITHER.equalsIgnoreCase(category)) {
                 munros = munroService.filterMunroListByCategory(munros, category);
@@ -41,10 +42,12 @@ public class MunroController {
             }
         } 
         if(StringUtils.hasLength(sortField)) {
+            //More general solution for sorting would be to build Predicate<Munro> here and pass that to filter in the service, or just filter here
+            //This would allow us ot take in lists for sort field and sort order to solve the additional optional feature in instructions
             if("NAME".equalsIgnoreCase(sortField)) {
-                munros = munroService.sortMunrosByName(munros, "ASC".equalsIgnoreCase(sortType));
+                munros = munroService.sortMunrosByName(munros, "ASC".equalsIgnoreCase(sortOrder));
             } else if("HEIGHT".equalsIgnoreCase(sortField)) {
-                munros = munroService.sortMunrosByHeight(munros, "ASC".equalsIgnoreCase(sortType));
+                munros = munroService.sortMunrosByHeight(munros, "ASC".equalsIgnoreCase(sortOrder));
             }
         }
         if(limitResults != null) {

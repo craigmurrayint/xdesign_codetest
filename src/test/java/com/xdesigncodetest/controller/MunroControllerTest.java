@@ -22,12 +22,10 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment=WebEnvironment.RANDOM_PORT)
-public class MunroControllerTest {
+class MunroControllerTest {
 
     @MockBean 
     private InMemoryMunroService munroService;
-    @Autowired
-    private MunroController munroController;
     @LocalServerPort
     private int port;
 
@@ -37,7 +35,7 @@ public class MunroControllerTest {
     List<Munro> munros;
     
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         munros = new ArrayList<>();
         Munro munro1 = simpleMunroBuilder("TOP", 1000, "ABC123", "Munro 1");
         Munro munro2 = simpleMunroBuilder("MUN", 1100, "123ABC", "Test Munro");
@@ -51,7 +49,7 @@ public class MunroControllerTest {
     }
 
     @Test
-    public void getAllMunrosTest() {
+    void getAllMunrosTest() {
         ResponseEntity<Munro[]> response = this.restTemplate.getForEntity("http://localhost:" + port + "/munros", 
            Munro[].class);
         Munro[] munroArray = response.getBody();
@@ -62,7 +60,7 @@ public class MunroControllerTest {
     }
 
     @Test
-    public void validCategoryFilterTest() {
+    void validCategoryFilterTest() {
         ResponseEntity<Munro[]> response = this.restTemplate.getForEntity("http://localhost:" + port + "/munros?category=NONSENSE",
             Munro[].class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
@@ -74,7 +72,7 @@ public class MunroControllerTest {
     }
 
     @Test
-    public void validHeightFilterTest() {
+    void validHeightFilterTest() {
         ResponseEntity<Munro[]> response = this.restTemplate.getForEntity("http://localhost:" + port + "/munros?maxHeight=-1",
             Munro[].class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
@@ -93,7 +91,7 @@ public class MunroControllerTest {
     }
 
     @Test
-    public void validSortFieldTest() {
+    void validSortFieldTest() {
         ResponseEntity<Munro[]> response = this.restTemplate.getForEntity("http://localhost:" + port + "/munros?sortField=nonsense",
             Munro[].class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
@@ -108,7 +106,7 @@ public class MunroControllerTest {
     }
 
     @Test
-    public void validLimitTest() {
+    void validLimitTest() {
         ResponseEntity<Munro[]> response = this.restTemplate.getForEntity("http://localhost:" + port + "/munros?limitResults=0",
             Munro[].class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
